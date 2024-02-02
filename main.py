@@ -6,8 +6,9 @@ import keyboard
 import os
 from pydub import AudioSegment, effects
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 
-def record_audio(file_path, processed_file_path, sample_rate=48000, duration_seconds=float('inf')):
+def record_audio(sample_rate=48000, duration_seconds=float('inf')):
     # Initialize variables
     audio_data = []
     is_recording = False
@@ -22,6 +23,11 @@ def record_audio(file_path, processed_file_path, sample_rate=48000, duration_sec
 
     try:
         while not keyboard.is_pressed("esc"):
+            # Create a new file with a unique name (timestamp-based)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            file_path = f"recorded_audio_{timestamp}.wav"
+            processed_file_path = f"processed_audio_{timestamp}.wav"
+            
             # Start listening for the 't' key to start/stop recording
             print("Press 't' to start/stop recording...")
             keyboard.wait("t")
@@ -61,22 +67,22 @@ def record_audio(file_path, processed_file_path, sample_rate=48000, duration_sec
             processed_audio.export(processed_file_path, format="wav")
 
             print(f"Audio recorded and saved to {file_path}")
-            print("Processed audio saved to processed_audio.wav")
+            print(f"Processed audio saved to {processed_file_path}")
 
-            # Parallelize transcription
             with ThreadPoolExecutor() as executor:
-                executor.submit(transcribe_audio, processed_file_path)
+                    executor.submit(transcribe_audio, processed_file_path)
+
+            os.remove(file_path)
+            os.remove(processed_file_path)
 
     except KeyboardInterrupt:
         print("\nRecording interrupted. Exiting.")
 
-def transcribe_audio(file_path):
+def transcribe_audio(file_pathy):
     model = whisper.load_model("base")
-    result = model.transcribe(file_path, fp16=False, language="English")
+    result = model.transcribe(file_pathy, fp16=False, language="English")
     print(result["text"])
-    os.remove("*.wav")
 
-if __name__ == "__main__":
-    file_path = "recorded_audio.wav"
-    processed_file_path = "processed_audio.wav" 
-    record_audio(file_path, processed_file_path)
+
+if __name__ == "__main__": 
+    record_audio()
