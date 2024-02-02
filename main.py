@@ -3,10 +3,11 @@ import sounddevice as sd
 import numpy as np
 import wave
 import keyboard
+import os
 from pydub import AudioSegment, effects
 from concurrent.futures import ThreadPoolExecutor
 
-def record_audio(file_path, sample_rate=48000, duration_seconds=float('inf')):
+def record_audio(file_path, processed_file_path, sample_rate=48000, duration_seconds=float('inf')):
     # Initialize variables
     audio_data = []
     is_recording = False
@@ -57,14 +58,14 @@ def record_audio(file_path, sample_rate=48000, duration_seconds=float('inf')):
             processed_audio = effects.high_pass_filter(processed_audio, 100)
 
             # Export the processed audio to a new file
-            processed_audio.export("processed_audio.wav", format="wav")
+            processed_audio.export(processed_file_path, format="wav")
 
             print(f"Audio recorded and saved to {file_path}")
             print("Processed audio saved to processed_audio.wav")
 
             # Parallelize transcription
             with ThreadPoolExecutor() as executor:
-                executor.submit(transcribe_audio, "processed_audio.wav")
+                executor.submit(transcribe_audio, processed_file_path)
 
     except KeyboardInterrupt:
         print("\nRecording interrupted. Exiting.")
@@ -73,7 +74,9 @@ def transcribe_audio(file_path):
     model = whisper.load_model("base")
     result = model.transcribe(file_path, fp16=False, language="English")
     print(result["text"])
+    os.remove("*.wav")
 
 if __name__ == "__main__":
     file_path = "recorded_audio.wav"
-    record_audio(file_path)
+    processed_file_path = "processed_audio.wav" 
+    record_audio(file_path, processed_file_path)
