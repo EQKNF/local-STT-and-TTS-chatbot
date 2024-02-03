@@ -51,28 +51,14 @@ def record_audio(sample_rate=48000, duration_seconds=float('inf')):
             # Load the recorded audio for post-processing
             recorded_audio = AudioSegment.from_wav(file_path)
 
-            # Apply post-processing (adjust as needed)
-            processed_audio = recorded_audio.set_frame_rate(44100)  # Adjust frame rate if needed
-
-            # Normalize volume (adjust as needed)
-            processed_audio = processed_audio.normalize()
-
-            # Apply band-pass filter for basic noise reduction (adjust as needed)
-            processed_audio = effects.low_pass_filter(processed_audio, 800)
-            processed_audio = effects.high_pass_filter(processed_audio, 100)
-
-            # Export the processed audio to a new file
-            processed_audio.export(processed_file_path, format="wav")
-
             print("Audio recorded and saved to recorded_audio.wav")
-            print("Processed audio saved to processed_audio.wav")
+
 
             # Parallelize transcription
             with ThreadPoolExecutor() as executor:
-                executor.submit(transcribe_audio, processed_file_path)
+                executor.submit(transcribe_audio, file_path)
                 audio_data = []
 
-            os.remove(processed_file_path)
             os.remove(file_path)
                 
     except KeyboardInterrupt:
