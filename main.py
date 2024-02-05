@@ -4,7 +4,7 @@ import numpy as np
 import wave
 import keyboard
 import os
-from pydub import AudioSegment, effects
+from pydub import AudioSegment
 from concurrent.futures import ThreadPoolExecutor
 
 def record_audio(sample_rate=48000, duration_seconds=float('inf')):
