@@ -57,6 +57,9 @@ def record_audio(sample_rate=48000, duration_seconds=float('inf')):
             # Parallelize transcription
             with ThreadPoolExecutor() as executor:
                 executor.submit(transcribe_audio, file_path)
+                
+                #send message to LLM here
+
                 audio_data = []
 
             os.remove(file_path)
@@ -68,8 +71,12 @@ def record_audio(sample_rate=48000, duration_seconds=float('inf')):
 def transcribe_audio(file_pathy):
     model = whisper.load_model("base")
     result = model.transcribe(file_pathy, fp16=False, language="English")
-    print(result["text"])
-    
+    message = f" im_start: {result["text"]} im_end."
+    print(message)
+    return message
+
+#def LLM func here. Try open-hermes-2.5 or Orca-2
+
 
 if __name__ == "__main__": 
     record_audio()
