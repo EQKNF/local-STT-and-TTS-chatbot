@@ -1,11 +1,22 @@
 from langchain_community.llms import CTransformers
+from langchain.prompts import PromptTemplate
 
 model_path = "C:/Users/emilf/Documents/Projects/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
 # Set gpu_layers to the number of layers to offload to GPU. Set to 0 if no GPU acceleration is available on your system.
-llm = CTransformers(model=model_path, model_type="mistral", gpu_layers=0)
+model = CTransformers(model=model_path, model_type="mistral", gpu_layers=0)
 
-model_promt: str = "Question: What is the capital of Australia?"
+identity = "You are an helpful AI assistant called Hawa. You reply with brief, to-the-point answers with no elaboration."
 
-response: str = llm(model_promt)
+model_prompt = "What is the capital of Australia?"
+
+chat_template = PromptTemplate.from_template(
+    "{system}\n{human}"
+)
+
+messages = chat_template.format(system=identity, human=model_prompt)
+
+print(messages)
+
+response = model.invoke(messages)
 
 print(response)
