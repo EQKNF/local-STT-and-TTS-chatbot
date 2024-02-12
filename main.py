@@ -4,7 +4,7 @@ import numpy as np
 import wave
 import keyboard
 import os
-from pydub import AudioSegment, effects
+from pydub import AudioSegment
 from concurrent.futures import ThreadPoolExecutor
 
 def record_audio(sample_rate=48000, duration_seconds=float('inf')):
@@ -51,28 +51,17 @@ def record_audio(sample_rate=48000, duration_seconds=float('inf')):
             # Load the recorded audio for post-processing
             recorded_audio = AudioSegment.from_wav(file_path)
 
-            # Apply post-processing (adjust as needed)
-            processed_audio = recorded_audio.set_frame_rate(44100)  # Adjust frame rate if needed
-
-            # Normalize volume (adjust as needed)
-            processed_audio = processed_audio.normalize()
-
-            # Apply band-pass filter for basic noise reduction (adjust as needed)
-            processed_audio = effects.low_pass_filter(processed_audio, 800)
-            processed_audio = effects.high_pass_filter(processed_audio, 100)
-
-            # Export the processed audio to a new file
-            processed_audio.export(processed_file_path, format="wav")
-
             print("Audio recorded and saved to recorded_audio.wav")
-            print("Processed audio saved to processed_audio.wav")
+
 
             # Parallelize transcription
             with ThreadPoolExecutor() as executor:
-                executor.submit(transcribe_audio, processed_file_path)
+                executor.submit(transcribe_audio, file_path)
+                
+                #send message to LLM here
+
                 audio_data = []
 
-            os.remove(processed_file_path)
             os.remove(file_path)
                 
     except KeyboardInterrupt:
@@ -82,8 +71,12 @@ def record_audio(sample_rate=48000, duration_seconds=float('inf')):
 def transcribe_audio(file_pathy):
     model = whisper.load_model("base")
     result = model.transcribe(file_pathy, fp16=False, language="English")
-    print(result["text"])
-    
+    message = f" im_start: {result["text"]} im_end."
+    print(message)
+    return message
+
+#def LLM func here. Try open-hermes-2.5 or Orca-2
+
 
 if __name__ == "__main__": 
     record_audio()
