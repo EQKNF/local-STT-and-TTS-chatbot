@@ -26,7 +26,8 @@ def HAWA():
     whisper_model = whisper.load_model("base")
 
     model_path = "C:/Users/emilf/Documents/Projects/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
-    llmModel = CTransformers(model=model_path, model_type="mistral", gpu_layers=0)
+    config = {"max_new_tokens": 256, "repetition_penalty": 1.1, "stop": "<|im_end|>"}
+    llmModel = CTransformers(model=model_path, model_type="mistral", gpu_layers=0, config=config)
 
 
 
