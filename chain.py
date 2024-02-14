@@ -4,9 +4,14 @@ from langchain_core.output_parsers import StrOutputParser
 
 # Preload model
 model_path = "C:/Users/emilf/Documents/Projects/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
-model = CTransformers(model=model_path, model_type="mistral", gpu_layers=0)
+llmModel = CTransformers(model=model_path, model_type="mistral", gpu_layers=0)
+lore = "You are Hawa, an helpful AI assistant. You reply with short, to-the-point answers in a friendly tone."
+message = "Hello, what is your name?"
 
-def process_input(identity, input_text):
+
+#del opp i biter
+
+def process_input(identity, input_text, model):
     # Define prompt and chain
     prompt = ChatPromptTemplate.from_messages([
         ("system", "{identity}"),
@@ -17,15 +22,12 @@ def process_input(identity, input_text):
     # Invoke chain
     return chain.invoke({"identity": identity, "input": input_text})
 
-def llmPromt():
-    lore = "You are Hawa, an helpful AI assistant. You reply with short, to-the-point answers in a friendly tone."
-    model_input = "Hello, what is your name?"
-
-    output = process_input(lore, model_input)
+def llmPrompt(transcribedMessage, lore, model):
+    output = process_input(lore, transcribedMessage, model)
     output_without_prefix = output.replace("AI:", "").strip()
     print(output_without_prefix)
 
     print("Quiting program")
 
 if __name__ == "__main__":
-    llmPromt()
+    llmPrompt(message, llmModel)

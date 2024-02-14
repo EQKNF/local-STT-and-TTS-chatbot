@@ -7,12 +7,24 @@ import os
 from pydub import AudioSegment
 from concurrent.futures import ThreadPoolExecutor
 
+from chain import llmPrompt
+from langchain_community.llms import CTransformers
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+
+
 def HAWA():
     # Initialize variables
-    whisper_model = whisper.load_model("base")
     sample_rate=48000
     audio_data = []
     is_recording = False
+    lore = "You are Hawa, an helpful AI assistant. You reply with short, to-the-point answers in a friendly tone."
+
+    # Preload models
+    whisper_model = whisper.load_model("base")
+
+    model_path = "C:/Users/emilf/Documents/Projects/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
+    llmModel = CTransformers(model=model_path, model_type="mistral", gpu_layers=0)
 
     # Define callback function for audio recording
     def callback(indata, frames, time, status):
@@ -50,13 +62,12 @@ def HAWA():
                 wf.writeframes(np.concatenate(audio_data, axis=0).tobytes())
             print("Audio recorded and saved to recorded_audio.wav")
 
-            # Parallelize transcription
-            with ThreadPoolExecutor() as executor:
-                executor.submit(transcribe_audio, file_path, whisper_model)
-            
-                #send message to LLM here
 
-                audio_data = []
+            userMessage = transcribe_audio(file_path, whisper_model)
+            
+            llmPrompt(userMessage, lore, llmModel)
+
+            audio_data = []
             os.remove(file_path)
                 
     except KeyboardInterrupt:
