@@ -7,7 +7,7 @@ import os
 from pydub import AudioSegment
 from concurrent.futures import ThreadPoolExecutor
 
-from chain import llmPrompt
+from chain import *
 from langchain_community.llms import CTransformers
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -18,7 +18,9 @@ def HAWA():
     sample_rate=48000
     audio_data = []
     is_recording = False
-    lore = "You are Hawa, an helpful AI assistant. You reply with short, to-the-point answers in a friendly tone."
+
+    lore = "Your name is Hawa. You are an AI assistant created by Emil. You respond with brief, direct answers with no elaboration."
+    message = "Hello, my name is Hawa. How may I help you?"
 
     # Preload models
     whisper_model = whisper.load_model("base")
@@ -26,7 +28,9 @@ def HAWA():
     model_path = "C:/Users/emilf/Documents/Projects/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
     llmModel = CTransformers(model=model_path, model_type="mistral", gpu_layers=0)
 
-    # Define callback function for audio recording
+    print(message)
+    # Define callback function for audio recording. 
+    #Flytt denne ut av hoved logikk?
     def callback(indata, frames, time, status):
         if status:
             print(f"Error in audio stream: {status}")

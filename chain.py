@@ -27,7 +27,7 @@ def llmPrompt(transcribedMessage, lore, model):
     output_without_prefix = output.replace("AI:", "").strip()
     print(output_without_prefix)
 
-    print("Quiting program")
+    print("LLM done")
 
 if __name__ == "__main__":
-    llmPrompt(message, llmModel)
+    llmPrompt(message, lore, llmModel)
