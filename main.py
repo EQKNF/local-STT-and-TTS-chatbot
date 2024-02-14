@@ -7,8 +7,10 @@ import os
 from pydub import AudioSegment
 from concurrent.futures import ThreadPoolExecutor
 
-def record_audio(sample_rate=48000, duration_seconds=float('inf')):
+def HAWA():
     # Initialize variables
+    whisper_model = whisper.load_model("base")
+    sample_rate=48000
     audio_data = []
     is_recording = False
 
@@ -24,8 +26,7 @@ def record_audio(sample_rate=48000, duration_seconds=float('inf')):
         while True:
             # Create a new file with a unique name (timestamp-based)
             file_path = "recorded_audio.wav"
-            processed_file_path = "processed_audio.wav"
-            
+    
             # Start listening for the 't' key to start/stop recording
             print("Press 't' to start recording")
             keyboard.wait("t")
@@ -47,31 +48,24 @@ def record_audio(sample_rate=48000, duration_seconds=float('inf')):
 
                 # Write the audio data
                 wf.writeframes(np.concatenate(audio_data, axis=0).tobytes())
-
-            # Load the recorded audio for post-processing
-            recorded_audio = AudioSegment.from_wav(file_path)
-
             print("Audio recorded and saved to recorded_audio.wav")
-
 
             # Parallelize transcription
             with ThreadPoolExecutor() as executor:
-                executor.submit(transcribe_audio, file_path)
-                
+                executor.submit(transcribe_audio, file_path, whisper_model)
+            
                 #send message to LLM here
 
                 audio_data = []
-
             os.remove(file_path)
                 
     except KeyboardInterrupt:
         print("\nRecording interrupted. Exiting.")
 
 
-def transcribe_audio(file_pathy):
-    model = whisper.load_model("base")
-    result = model.transcribe(file_pathy, fp16=False, language="English")
-    message = f" im_start: {result["text"]} im_end."
+def transcribe_audio(file_pathy, whisper_model):
+    result = whisper_model.transcribe(file_pathy, fp16=False, language="English")
+    message = result["text"]
     print(message)
     return message
 
@@ -79,4 +73,4 @@ def transcribe_audio(file_pathy):
 
 
 if __name__ == "__main__": 
-    record_audio()
+    HAWA()
