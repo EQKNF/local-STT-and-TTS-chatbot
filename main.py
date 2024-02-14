@@ -19,8 +19,8 @@ def HAWA():
     audio_data = []
     is_recording = False
 
-    lore = "Your name is Hawa. You are an AI assistant created by Emil. You respond with brief, direct answers with no elaboration."
-    message = "Hello, my name is Hawa. How may I help you?"
+    lore = "You are Hawa, an helpful AI assistant. You reply with brief, to-the-point answers with no elaboration."
+    message = "Hello, what is your name?"
 
     # Preload models
     whisper_model = whisper.load_model("base")
@@ -28,7 +28,13 @@ def HAWA():
     model_path = "C:/Users/emilf/Documents/Projects/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
     llmModel = CTransformers(model=model_path, model_type="mistral", gpu_layers=0)
 
-    print(message)
+
+
+    #test
+    llmPrompt(lore, message, llmModel)
+
+
+
     # Define callback function for audio recording. 
     #Flytt denne ut av hoved logikk?
     def callback(indata, frames, time, status):
@@ -69,7 +75,7 @@ def HAWA():
 
             userMessage = transcribe_audio(file_path, whisper_model)
             
-            llmPrompt(userMessage, lore, llmModel)
+            llmPrompt(lore, userMessage, llmModel)
 
             audio_data = []
             os.remove(file_path)
@@ -83,8 +89,6 @@ def transcribe_audio(file_pathy, whisper_model):
     message = result["text"]
     print(message)
     return message
-
-#def LLM func here. Try open-hermes-2.5 or Orca-2
 
 
 if __name__ == "__main__": 
