@@ -17,13 +17,15 @@ def process_input(identity, input_text):
     # Invoke chain
     return chain.invoke({"identity": identity, "input": input_text})
 
-def main():
-    lore = "You are Hawa, an helpful AI assistant. You reply with short answers in a friendly tone."
+def llmPromt():
+    lore = "You are Hawa, an helpful AI assistant. You reply with short, to-the-point answers in a friendly tone."
     model_input = "Hello, what is your name?"
 
     output = process_input(lore, model_input)
-    print(output)
+    output_without_prefix = output.replace("AI:", "").strip()
+    print(output_without_prefix)
+
     print("Quiting program")
 
 if __name__ == "__main__":
-    main()
+    llmPromt()
