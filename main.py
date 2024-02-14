@@ -4,10 +4,7 @@ import numpy as np
 import wave
 import keyboard
 import os
-from pydub import AudioSegment
-from concurrent.futures import ThreadPoolExecutor
-
-from chain import *
+from chain import llmPrompt
 from langchain_community.llms import CTransformers
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -19,22 +16,18 @@ def HAWA():
     audio_data = []
     is_recording = False
 
-    lore = "You are Hawa, an helpful AI assistant. You reply with brief, to-the-point answers with no elaboration."
-    message = "Hello, what is your name?"
+    lore = "You are Hawa, an helpful AI assistant created by Emil. You reply with brief, to-the-point sentences."
+    message = "Hello, please introduce yourself?"
 
     # Preload models
     whisper_model = whisper.load_model("base")
 
     model_path = "C:/Users/emilf/Documents/Projects/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
-    config = {"max_new_tokens": 256, "repetition_penalty": 1.1, "stop": "<|im_end|>"}
+    config = {"max_new_tokens": 256, "repetition_penalty": 1.1, "stop": "<|im_end|>", "temperature": 0.8}
     llmModel = CTransformers(model=model_path, model_type="mistral", gpu_layers=0, config=config)
-
-
 
     #test
     llmPrompt(lore, message, llmModel)
-
-
 
     # Define callback function for audio recording. 
     #Flytt denne ut av hoved logikk?
@@ -69,13 +62,13 @@ def HAWA():
                 wf.setsampwidth(4)  # 4 bytes for int32
                 wf.setframerate(sample_rate)
 
-                # Write the audio data
+                # Write the audio data to recorded_audio.wav
                 wf.writeframes(np.concatenate(audio_data, axis=0).tobytes())
-            print("Audio recorded and saved to recorded_audio.wav")
 
-
+            # Transcribe the recorded messsage
             userMessage = transcribe_audio(file_path, whisper_model)
-            
+
+            print("Processing response, please wait")
             llmPrompt(lore, userMessage, llmModel)
 
             audio_data = []
