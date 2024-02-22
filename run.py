@@ -1,13 +1,12 @@
-import whisper
 import sounddevice as sd
-from langchain_community.llms import CTransformers
 
 import numpy as np
 import wave
 import keyboard
 import os
 
-import utils.llm_chain as llm
+import utils.llm.llm_chain as llm
+import utils.speech_to_text.transcribe as stt
 
 
 def main():
@@ -16,21 +15,10 @@ def main():
     audio_data = []
     is_recording = False
 
-    lore = "You are Hawa, an helpful AI assistant created by Emil. You reply with brief, to-the-point sentences in under 50 words."
-    message = "Hello, please introduce yourself?"
-
-    # Preload models
-    whisper_model = whisper.load_model("base")
-
-    model_path = "C:/Users/emilf/Documents/Projects/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
-    config = {"max_new_tokens": 256, "repetition_penalty": 1.1, "stop": "<|im_end|>", "temperature": 0.8}
-    llmModel = CTransformers(model=model_path, model_type="mistral", gpu_layers=0, config=config)
-
     #test
-    llm.llmPrompt(lore, message, llmModel)
+    llm.llm_prompt(llm.message)
 
     # Define callback function for audio recording. 
-    #Flytt denne ut av hoved logikk?
     def callback(indata, frames, time, status):
         if status:
             print(f"Error in audio stream: {status}")
@@ -66,23 +54,16 @@ def main():
                 wf.writeframes(np.concatenate(audio_data, axis=0).tobytes())
 
             # Transcribe the recorded messsage
-            userMessage = transcribe_audio(file_path, whisper_model)
+            user_message = stt.transcribe_audio(file_path)
 
             print("Processing response, please wait")
-            llm.llmPrompt(lore, userMessage, llmModel)
+            llm.llm_prompt(user_message)
 
             audio_data = []
             os.remove(file_path)
                 
     except KeyboardInterrupt:
         print("\nRecording interrupted. Exiting.")
-
-
-def transcribe_audio(file_pathy, whisper_model):
-    result = whisper_model.transcribe(file_pathy, fp16=False, language="English")
-    message = result["text"]
-    print(message)
-    return message
 
 
 if __name__ == "__main__": 
