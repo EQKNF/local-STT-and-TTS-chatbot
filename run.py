@@ -1,20 +1,24 @@
-import whisper
 import sounddevice as sd
+
 import numpy as np
 import wave
 import keyboard
 import os
-from pydub import AudioSegment
-from concurrent.futures import ThreadPoolExecutor
 
-def HAWA():
+import utils.llm.llm_chain as llm
+import utils.speech_to_text.transcribe_audio as stt
+
+
+def main():
     # Initialize variables
-    whisper_model = whisper.load_model("base")
     sample_rate=48000
     audio_data = []
     is_recording = False
 
-    # Define callback function for audio recording
+    #test
+    llm.llm_prompt(llm.message)
+
+    # Define callback function for audio recording. 
     def callback(indata, frames, time, status):
         if status:
             print(f"Error in audio stream: {status}")
@@ -46,31 +50,21 @@ def HAWA():
                 wf.setsampwidth(4)  # 4 bytes for int32
                 wf.setframerate(sample_rate)
 
-                # Write the audio data
+                # Write the audio data to recorded_audio.wav
                 wf.writeframes(np.concatenate(audio_data, axis=0).tobytes())
-            print("Audio recorded and saved to recorded_audio.wav")
 
-            # Parallelize transcription
-            with ThreadPoolExecutor() as executor:
-                executor.submit(transcribe_audio, file_path, whisper_model)
-            
-                #send message to LLM here
+            # Transcribe the recorded messsage
+            user_message = stt.transcribe_audio(file_path)
 
-                audio_data = []
+            print("Processing response, please wait")
+            llm.llm_prompt(user_message)
+
+            audio_data = []
             os.remove(file_path)
                 
     except KeyboardInterrupt:
         print("\nRecording interrupted. Exiting.")
 
 
-def transcribe_audio(file_pathy, whisper_model):
-    result = whisper_model.transcribe(file_pathy, fp16=False, language="English")
-    message = result["text"]
-    print(message)
-    return message
-
-#def LLM func here. Try open-hermes-2.5 or Orca-2
-
-
 if __name__ == "__main__": 
-    HAWA()
+    main()
