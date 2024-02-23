@@ -6,7 +6,7 @@ import keyboard
 import os
 
 import utils.llm.llm_chain as llm
-import utils.speech_to_text.transcribe as stt
+import utils.speech_to_text.transcribe_audio as stt
 
 
 def main():
