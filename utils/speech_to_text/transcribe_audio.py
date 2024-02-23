@@ -1,10 +1,10 @@
 import whisper
 
 # Preload model
-whisper_model = whisper.load_model("base")
+model = whisper.load_model("base")
 
-def transcribe_audio(file_pathy):
-    result = whisper_model.transcribe(file_pathy, fp16=False, language="English")
+def transcribe_audio(file_path):
+    result = model.transcribe(file_path, fp16=False, language="English")
     message = result["text"]
-    print(message)
+    print(f"From user: {message}")
     return message

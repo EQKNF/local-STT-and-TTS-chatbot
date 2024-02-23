@@ -10,7 +10,7 @@ llm_model = CTransformers(model=model_path, model_type="mistral", gpu_layers=0, 
 # Prepare model background and introduction
 user = "Emil"
 lore = "You are Hawa, an helpful AI assistant created by Emil. You reply with brief, to-the-point sentences in under 50 words."
-message = f"Hello I'm {user}, please introduce yourself?"
+introduction_prompt = f"Hello I'm {user}, please introduce yourself?"
 
 
 def llm_prompt(transcribed_message):
@@ -30,4 +30,4 @@ def llm_prompt(transcribed_message):
 
 
 if __name__ == "__main__":
-    llm_prompt(message)
+    llm_prompt(introduction_prompt)
