@@ -9,7 +9,7 @@ llm_model = CTransformers(model=model_path, model_type="mistral", gpu_layers=0, 
 
 # Prepare model background and introduction
 user = "Emil"
-lore = "You are Hawa, an helpful AI assistant created by Emil. You reply with brief, to-the-point sentences in under 50 words."
+lore = "You are Ha-kun, an helpful AI assistant created by Emil. You reply with brief, to-the-point sentences."
 introduction_prompt = f"Hello I'm {user}, please introduce yourself?"
 
 
