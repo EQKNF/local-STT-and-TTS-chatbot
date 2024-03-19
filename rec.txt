@@ -1,0 +1,3 @@
+pip install silero numpy ctransformers openai-whisper setuptools-rust torch torchaudio torchvision PyAudio sounddevice keyboard langchain 
+
+ffmpeg: restart or https://www.geeksforgeeks.org/how-to-install-ffmpeg-on-windows/

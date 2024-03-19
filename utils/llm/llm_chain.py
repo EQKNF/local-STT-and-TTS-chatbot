@@ -3,13 +3,13 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 # Preload model
-model_path = "C:/Users/emilf/Documents/Projects/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
+model_path = "C:/Users/emilf/Documents/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
 config = {"max_new_tokens": 256, "repetition_penalty": 1.1, "stop": "<|im_end|>", "temperature": 0.8}
 llm_model = CTransformers(model=model_path, model_type="mistral", gpu_layers=0, config=config)
 
 # Prepare model background and introduction
 user = "Emil"
-lore = "You are Ha-kun, an helpful AI assistant created by Emil. You reply with brief, to-the-point sentences."
+lore = "You are Hannah, an helpful AI assistant created by Emil. You reply with brief, to-the-point sentences."
 introduction_prompt = f"Hello I'm {user}, please introduce yourself?"
 
 
