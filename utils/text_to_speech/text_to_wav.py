@@ -12,7 +12,7 @@ model = torch.package.PackageImporter(local_model_file).load_pickle("tts_models"
 model.to(process_device)
 
 sample_rate = 48000
-speaker="en_0" 
+speaker="en_21" 
 #best so far: female: 0, 26, 21, 72, 94, 88, 96, 92, 59
 #male: 15, 70, 77, 79, 
 
