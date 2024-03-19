@@ -1,8 +1,8 @@
 import sounddevice as sd
-
-import wave
-import keyboard
 import numpy as np
+
+import keyboard
+import wave
 
 
 test = "here.wav"

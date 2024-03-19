@@ -4,7 +4,7 @@ import torch
 
 device = torch.device('cpu')
 torch.set_num_threads(4)
-local_file = 'model.pt'
+local_file = "models/silero_tts_model.pt"
 
 if not os.path.isfile(local_file):
     torch.hub.download_url_to_file('https://models.silero.ai/models/tts/en/v3_en.pt',

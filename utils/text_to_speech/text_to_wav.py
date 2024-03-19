@@ -1,30 +1,27 @@
-from transformers import SpeechT5Processor, SpeechT5ForTextToSpeech, SpeechT5HifiGan
-from datasets import load_dataset
+import os
 import torch
-import soundfile as sf
-from datasets import load_dataset
+
+process_device = torch.device("cpu")
+torch.set_num_threads(4)
+local_model_file = "models/silero_tts_model.pt"
+
+if not os.path.isfile(local_model_file):
+    torch.hub.download_url_to_file("https://models.silero.ai/models/tts/en/v3_en.pt", local_model_file)  
+
+model = torch.package.PackageImporter(local_model_file).load_pickle("tts_models", "model")
+model.to(process_device)
+
+sample_rate = 48000
+speaker="en_21" 
+#best so far: female: 0, 26, 21, 72, 94, 88, 96, 92, 59
+#male: 15, 70, 77, 79, 
+
+text_input = "Hello there! Currently testing text to speech on my computer. She sells sea shells by the sea shore."
+audio_file_path = "test/response.wav"
+
+def produce_tts(text_input, audio_file_path):
+    model.save_wav(text=text_input, speaker=speaker, sample_rate=sample_rate, audio_path=audio_file_path)
 
 
-processor = SpeechT5Processor.from_pretrained("microsoft/speecht5_tts")
-model = SpeechT5ForTextToSpeech.from_pretrained("microsoft/speecht5_tts")
-vocoder = SpeechT5HifiGan.from_pretrained("microsoft/speecht5_hifigan")
-
-#audio_path = "speech.wav"
-#text_input = "Hello there, how are you?"
-
-# load xvector containing speaker's voice characteristics from a dataset
-embeddings_dataset = load_dataset("Matthijs/cmu-arctic-xvectors", split="validation")
-speaker_embeddings = torch.tensor(embeddings_dataset[7306]["xvector"]).unsqueeze(0)
-
-def produce_tts(text_input, audio_path):
-    inputs = processor(text=text_input, return_tensors="pt")
-    speech = model.generate_speech(inputs["input_ids"], speaker_embeddings, vocoder=vocoder)
-
-    # Todo: fix sample_rate and play rate
-    sf.write(audio_path, speech.numpy(), samplerate=16000)
-
-
-"""
 if __name__ == "__main__":
-    produce_tts(text_input, audio_path)
-    """
+    produce_tts(text_input, audio_file_path)

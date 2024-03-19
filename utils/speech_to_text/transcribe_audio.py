@@ -8,3 +8,6 @@ def transcribe_audio(file_path):
     message = result["text"]
     print(f"From user: {message}")
     return message
+
+if __name__ == "__main__":
+    transcribe_audio("C:/Users/emilf/Documents/repo/health-and-wellness-advisor/here.wav")
