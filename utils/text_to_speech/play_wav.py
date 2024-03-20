@@ -1,9 +1,7 @@
-#!usr/bin/env python  
-#coding=utf-8  
 import pyaudio  
 import wave  
 
-#audio_path = "speech.wav"
+audio_path = "response.wav"
 
 def play_audio(audio_path): 
     #define stream chunk   
@@ -33,7 +31,7 @@ def play_audio(audio_path):
     #close PyAudio  
     p.terminate()
 
-"""
+
 if __name__ == "__main__": 
     play_audio(audio_path)
-    """
+    

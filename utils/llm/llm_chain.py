@@ -1,9 +1,16 @@
+import torch
 from langchain_community.llms import CTransformers
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
+import os
+
+
 # Preload model
 model_path = "C:/Users/emilf/Documents/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
+if not os.path.isfile(model_path):
+    torch.hub.download_url_to_file("https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF/resolve/main/openhermes-2.5-mistral-7b.Q4_K_M.gguf?download=true", model_path) 
+
 config = {"max_new_tokens": 256, "repetition_penalty": 1.1, "stop": "<|im_end|>", "temperature": 0.8}
 llm_model = CTransformers(model=model_path, model_type="mistral", gpu_layers=0, config=config)
 
