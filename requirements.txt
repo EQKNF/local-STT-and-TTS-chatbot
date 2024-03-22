@@ -1,4 +1,4 @@
 pip install silero numpy ctransformers openai-whisper setuptools-rust torch torchaudio torchvision PyAudio sounddevice keyboard langchain ffmpeg
 
-ffmpeg: restart pc / download manual and add to path
+ffmpeg: restart pc / manual download and add to path
 
