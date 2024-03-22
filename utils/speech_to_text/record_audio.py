@@ -1,11 +1,11 @@
 import sounddevice as sd
 import numpy as np
-
 import keyboard
+
 import wave
 
 
-test = "here.wav"
+test = "test_recording.wav"
 sample_rate = 48000
 is_recording = False
 
