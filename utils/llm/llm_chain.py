@@ -33,14 +33,12 @@ config = {"max_new_tokens": 256, "repetition_penalty": 1.1, "stop": "<|im_end|>"
 llm_model = CTransformers(model=model_path, model_type="mistral", gpu_layers=0, config=config)
 
 # Prepare model background and introduction
+conversation_history_path = "utils/llm/conversations.json"
 user = "Emil"
 assistant = "Hannah"
 lore = f"You are {assistant}, an helpful AI assistant created by Emil. You reply with brief, to-the-point sentences."
-#introduction_message = f"<|im_start|>system\n{lore}\n<|im_end|>\n<|im_start|>user\n{f"Hello I'm {user}, please introduce yourself?"}\n<|im_end|>\n<|im_start|>assistant\n"
+introduction_message = f"Hello I'm {user}, please introduce yourself?"
 
-conversation_history_path = "utils/llm/conversations.json"
-
-transcribed_message = "hey, what was the first country I asked you about?"
 
 @timeit
 def llm_prompt(transcribed_message):
@@ -72,7 +70,7 @@ def llm_prompt(transcribed_message):
     print(output_llm)
     return output_llm
 
-@timeit
+
 def get_history():
     prepare_prompt = []
     try:
@@ -86,7 +84,7 @@ def get_history():
         prepare_prompt.append(content)
     
     prompt_total_len = sum(len(content) for content in prepare_prompt)
-    while prompt_total_len > 4000:
+    while prompt_total_len > 500:
         try:
             # print(total_len)
             # print(len(prompt))
@@ -94,14 +92,13 @@ def get_history():
             prompt_total_len = sum(len(content) for content in prepare_prompt)
         except:
             print("Error: Prompt too long!")
-    # total_characters = sum(len(d['content']) for d in prompt)
-    # print(f"Total characters: {total_characters}")
+            
     # Create the ready prompt with the accumulated content
     ready_prompt = f"<|im_start|>system\nBelow is the conversation history sorted from oldest to newest conversation.\n<|im_end|>\n\n" + "".join(prepare_prompt) + f"\n<|im_start|>system\nConversation history end.\n<|im_end|>\n\n"
-    
     #print(ready_prompt)
     return ready_prompt
 
+
 if __name__ == "__main__":
     #get_history()
-    llm_prompt(transcribed_message)
+    llm_prompt(introduction_message)

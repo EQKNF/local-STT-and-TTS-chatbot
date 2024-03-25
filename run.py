@@ -12,7 +12,7 @@ def main():
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_intro_file:
         temp_intro_path = temp_intro_file.name
 
-        intro = llm.llm_prompt(llm.introduction_prompt)
+        intro = llm.llm_prompt(llm.introduction_message)
         ttw.produce_tts(intro, temp_intro_path)
         play.play_audio(temp_intro_path)
 
