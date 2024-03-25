@@ -8,7 +8,6 @@ import utils.text_to_speech.play_wav as play
 
 
 def main():
-    # First run through to preload models, and prompt introduction
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_intro_file:
         temp_intro_path = temp_intro_file.name
 
@@ -20,7 +19,6 @@ def main():
         while True:
             with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio_file, \
                 tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_response_file:
-
                 temp_audio_path = temp_audio_file.name
                 temp_response_path = temp_response_file.name
 
