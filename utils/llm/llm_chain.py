@@ -25,7 +25,7 @@ def timeit(func):
 sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
 
 # Preload model
-model_path = "C:/Users/emilf/Documents/models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
+model_path = "models/openhermes-2.5-mistral-7b.Q4_K_M.gguf"
 if not os.path.isfile(model_path):
     torch.hub.download_url_to_file("https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF/resolve/main/openhermes-2.5-mistral-7b.Q4_K_M.gguf?download=true", model_path) 
 
@@ -34,7 +34,7 @@ llm_model = CTransformers(model=model_path, model_type="mistral", gpu_layers=0, 
 
 # Prepare model background and introduction
 conversation_history_path = "utils/llm/conversations.json"
-user = "Emil"
+user = "User"
 assistant = "Hannah"
 lore = f"You are {assistant}, an helpful AI assistant created by Emil. You reply with brief, to-the-point sentences."
 introduction_message = f"Hello I'm {user}, please introduce yourself?"

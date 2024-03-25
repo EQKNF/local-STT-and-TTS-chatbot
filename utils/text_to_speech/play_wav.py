@@ -1,7 +1,7 @@
 import pyaudio  
 import wave  
 
-audio_path = "response.wav"
+audio_path = "misc/response.wav"
 
 def play_audio(audio_path): 
     #define stream chunk   

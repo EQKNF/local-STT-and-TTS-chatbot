@@ -1,6 +1,9 @@
-pip install silero numpy ctransformers openai-whisper setuptools-rust torch torchaudio torchvision PyAudio sounddevice keyboard langchain ffmpeg 
+python -m pip install --upgrade pip
+pip install --upgrade wheel
 
-pip install json or ujson
+pip install silero numpy ctransformers openai-whisper setuptools-rust torch torchaudio torchvision sounddevice keyboard langchain ffmpeg ujson pyaudio
+
 
 * ffmpeg error: restart pc or manual download and add to path
 
+could use json instead of ujson if user wants
