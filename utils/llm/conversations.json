@@ -1,0 +1,44 @@
+{
+    "history": [
+        {
+            "role": "user",
+            "content": "<|im_start|>user\nhey there\n<|im_end|>\n"
+        },
+        {
+            "role": "assistant",
+            "content": "<|im_start|>assistant\nHello! How can I assist you today?\n<|im_end|>\n"
+        },
+        {
+            "role": "user",
+            "content": "<|im_start|>user\nhey, what is the capital of Australia?\n<|im_end|>\n"
+        },
+        {
+            "role": "assistant",
+            "content": "<|im_start|>assistant\nThe capital of Australia is Canberra.\n<|im_end|>\n"
+        },
+        {
+            "role": "user",
+            "content": "<|im_start|>user\nhey, what is the capital of Afghanistan?\n<|im_end|>\n"
+        },
+        {
+            "role": "assistant",
+            "content": "<|im_start|>assistant\nKabul\n\n<|im_end|>\n"
+        },
+        {
+            "role": "user",
+            "content": "<|im_start|>user\nhey, tell me a joke?\n<|im_end|>\n"
+        },
+        {
+            "role": "assistant",
+            "content": "<|im_start|>assistant\nWhy don't scientists trust atoms?\n\nBecause they make up everything...even lies. \n\n\n<|im_end|>\n"
+        },
+        {
+            "role": "user",
+            "content": "<|im_start|>user\nhey, what was the first country I asked you about?\n<|im_end|>\n"
+        },
+        {
+            "role": "assistant",
+            "content": "<|im_start|>assistant\nThe first country you asked me about was Australia.\n<|im_end|>\n"
+        }
+    ]
+}

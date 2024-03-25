@@ -8,10 +8,7 @@ from langchain_community.llms import CTransformers
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
-import os, sys
-
-
-import time
+import os, sys, time
 from functools import wraps
 
 def timeit(func):
@@ -41,10 +38,11 @@ assistant = "Hannah"
 lore = f"You are {assistant}, an helpful AI assistant created by Emil. You reply with brief, to-the-point sentences."
 #introduction_message = f"<|im_start|>system\n{lore}\n<|im_end|>\n<|im_start|>user\n{f"Hello I'm {user}, please introduce yourself?"}\n<|im_end|>\n<|im_start|>assistant\n"
 
-conversation_history_path = "misc/conversations.json"
+conversation_history_path = "utils/llm/conversations.json"
 
-transcribed_message = "hey, tell me a joke?"
+transcribed_message = "hey, what was the first country I asked you about?"
 
+@timeit
 def llm_prompt(transcribed_message):
     current_conversation = []
     # Construct ChatML prompt
@@ -71,11 +69,10 @@ def llm_prompt(transcribed_message):
     with open(conversation_history_path, "w") as json_file:
         json.dump(current_conversation, json_file, indent=4)
     
-    print(prompt)
     print(output_llm)
     return output_llm
 
-#@timeit
+@timeit
 def get_history():
     prepare_prompt = []
     try:
@@ -84,17 +81,21 @@ def get_history():
     except FileNotFoundError:
         print("File not found")
         
-        
     history = [conversation["content"] for conversation in data_conversations["history"]]
-    
-    # Accumulate content until it reaches the maximum length or the end of the conversation history
-    prompt_total_len = 0
     for content in history:
-        if prompt_total_len + len(content) > 4000:
-            break  # Stop adding content if it exceeds 4000 characters
         prepare_prompt.append(content)
-        prompt_total_len += len(content)
     
+    prompt_total_len = sum(len(content) for content in prepare_prompt)
+    while prompt_total_len > 4000:
+        try:
+            # print(total_len)
+            # print(len(prompt))
+            prepare_prompt.pop(0) #0 for oldest, nothing for newest
+            prompt_total_len = sum(len(content) for content in prepare_prompt)
+        except:
+            print("Error: Prompt too long!")
+    # total_characters = sum(len(d['content']) for d in prompt)
+    # print(f"Total characters: {total_characters}")
     # Create the ready prompt with the accumulated content
     ready_prompt = f"<|im_start|>system\nBelow is the conversation history sorted from oldest to newest conversation.\n<|im_end|>\n\n" + "".join(prepare_prompt) + f"\n<|im_start|>system\nConversation history end.\n<|im_end|>\n\n"
     
