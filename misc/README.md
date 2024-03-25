@@ -13,3 +13,6 @@ Other goals:
 - Image generation (stable diffusion?).
 - Be liked by all age groups, (cute mascot and voice?)
 
+
+
+langchain: https://python.langchain.com/docs/expression_language/

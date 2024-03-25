@@ -10,7 +10,6 @@ from langchain_core.output_parsers import StrOutputParser
 
 import os, sys
 
-
 import time
 from functools import wraps
 
@@ -23,6 +22,8 @@ def timeit(func):
         print(f"Function {func.__name__} took {end_time - start_time} seconds to execute")
         return result
     return wrapper
+
+
 
 # Help the CLI write unicode characters to terminal
 sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
@@ -43,17 +44,16 @@ lore = f"You are {assistant}, an helpful AI assistant created by Emil. You reply
 
 conversation_history_path = "misc/conversations.json"
 
-transcribed_message = "hey, tell me a joke?"
-
+transcribed_message = "hey there"
 def llm_prompt(transcribed_message):
     current_conversation = []
     # Construct ChatML prompt
-    chat_history = get_history()
-    
-    prompt = f"<|im_start|>system\n{lore}\n<|im_end|>\n{chat_history}\n<|im_start|>user\n{transcribed_message}\n<|im_end|>\n<|im_start|>assistant\n"
+    prompt = get_prompt()
+    test = f"<|im_start|>system\nhello\n<|im_end|>\n"
+    #prompt = f"<|im_start|>system\n{lore}\n<|im_end|>\n<|im_start|>user\n{transcribed_message}\n<|im_end|>\n<|im_start|>assistant\n"
     
     # Define chain with ChatPromptTemplate
-    prompt_template = ChatPromptTemplate.from_template(prompt)
+    prompt_template = ChatPromptTemplate.from_template(test)
     chain = prompt_template | llm_model | StrOutputParser()
     # Invoke chain
     output_llm = chain.invoke({})
@@ -65,42 +65,44 @@ def llm_prompt(transcribed_message):
     except FileNotFoundError:
         current_conversation = []
         
-    current_conversation["history"].append({'role': 'user', 'content': f"<|im_start|>user\n{transcribed_message}\n<|im_end|>\n"})
-    current_conversation["history"].append({'role': 'assistant', 'content': f"<|im_start|>assistant\n{output_llm}\n<|im_end|>\n"})
+    current_conversation["history"].append({'role': 'user', 'content': transcribed_message})
+    current_conversation["history"].append({'role': 'assistant', 'content': output_llm})
     
     with open(conversation_history_path, "w") as json_file:
         json.dump(current_conversation, json_file, indent=4)
     
-    print(prompt)
     print(output_llm)
     return output_llm
 
-#@timeit
-def get_history():
+@timeit
+def get_prompt():
+    prompt_total_len = 0
     prepare_prompt = []
-    try:
-        with open(conversation_history_path, "r") as json_file:
-            data_conversations = json.load(json_file)
-    except FileNotFoundError:
-        print("File not found")
-        
+
+    with open(conversation_history_path, "r") as json_file:
+        data_conversations = json.load(json_file)
         
     history = [conversation["content"] for conversation in data_conversations["history"]]
-    
-    # Accumulate content until it reaches the maximum length or the end of the conversation history
-    prompt_total_len = 0
     for content in history:
-        if prompt_total_len + len(content) > 4000:
-            break  # Stop adding content if it exceeds 4000 characters
         prepare_prompt.append(content)
-        prompt_total_len += len(content)
     
-    # Create the ready prompt with the accumulated content
-    ready_prompt = f"<|im_start|>system\nBelow is the conversation history sorted from oldest to newest conversation.\n<|im_end|>\n\n" + "".join(prepare_prompt) + f"\n<|im_start|>system\nConversation history end.\n<|im_end|>\n\n"
+    prompt_total_len = sum(len(content) for content in prepare_prompt)
+    while prompt_total_len > 4000:
+        try:
+            # print(total_len)
+            # print(len(prompt))
+            prepare_prompt.pop(0) #0 for oldest, nothing for newest
+            prompt_total_len = sum(len(content) for content in prepare_prompt)
+        except:
+            print("Error: Prompt too long!")
+    # total_characters = sum(len(d['content']) for d in prompt)
+    # print(f"Total characters: {total_characters}")
+
+    ready_prompt = f"<|im_start|>system\nBelow is the conversation history sorted from oldest to newest conversation.\n<|im_end|>\n\n" + "\n".join(prepare_prompt)
     
-    #print(ready_prompt)
+    print(ready_prompt)
     return ready_prompt
 
 if __name__ == "__main__":
-    #get_history()
-    llm_prompt(transcribed_message)
+    get_prompt()
+    #llm_prompt(transcribed_message)

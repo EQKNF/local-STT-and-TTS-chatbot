@@ -1,0 +1,36 @@
+{
+    "history": [
+        {
+            "role": "user",
+            "content": "<|im_start|>user\nhey there\n<|im_end|>\n"
+        },
+        {
+            "role": "assistant",
+            "content": "<|im_start|>assistant\nHello! How can I assist you today?\n<|im_end|>\n"
+        },
+        {
+            "role": "user",
+            "content": "<|im_start|>user\nhey there\n<|im_end|>\n"
+        },
+        {
+            "role": "assistant",
+            "content": "<|im_start|>assistant\nHi there! What can I help you with?\n<|im_end|>\n"
+        },
+        {
+            "role": "user",
+            "content": "<|im_start|>user\nhey, what is the capital of Australia?\n<|im_end|>\n"
+        },
+        {
+            "role": "assistant",
+            "content": "<|im_start|>assistant\nThe capital of Australia is Canberra.\n<|im_end|>\n"
+        },
+        {
+            "role": "user",
+            "content": "<|im_start|>user\nhey, what is the capital of Afghanistan?\n<|im_end|>\n"
+        },
+        {
+            "role": "assistant",
+            "content": "<|im_start|>assistant\nKabul\n\n<|im_end|>\n"
+        }
+    ]
+}
